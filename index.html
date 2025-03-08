@@ -9,7 +9,7 @@
         body {
             background-color: rgb(15, 15, 15);
             color: limegreen;
-            font-family: 'Fira Code', monospace;
+            font-family: 'JetBrains Mono', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,33 +18,165 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            overflow: hidden;
         }
         .terminal {
             font-size: 2rem;
-            white-space: nowrap;
-            overflow: hidden;
+            white-space: normal;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
             border-right: 3px solid limegreen;
             padding-right: 5px;
             animation: blink 0.8s infinite;
             max-width: 100%;
+            display: inline-block;
         }
         @keyframes blink {
             50% { border-color: transparent; }
+        }
+
+
+        @media (max-width: 600px) {
+            .terminal {
+                max-width: 90%;
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .terminal {
+                max-width: 90%;
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="terminal" id="terminal"></div>
     <script>
-        const text = "Hello World 🌍";
+
+        const phrases = [
+            "Hello World 🌍",
+            "Do not deploy on Friday 🚨",
+            "Code. Sleep. Repeat. 💻",
+            "Bug? It's a feature! 🐛",
+            "Segmentation fault (core dumped) 💥",
+            "There is no cloud, just someone else's computer ☁️",
+            "Commit first, ask questions later 🤔",
+            "The cake is a lie 🎂",
+            "sudo make me a sandwich 🥪",
+            "Ctrl+C, Ctrl+V, Ctrl+Z 🔄",
+            "It works on my machine! 🖥️",
+            "You have been in debug mode for too long 🕵️‍♂️",
+            "while(true) { coffee(); } ☕",
+            "Error 404: Motivation not found ❌",
+            "Trust me, I'm an engineer 🏗️",
+            "rm -rf / — The last command you'll ever run 😱",
+            "Nobody reads the docs 📜",
+            "Keep calm and code on 🧑‍💻",
+            "AI will not take your job... yet 🤖",
+            "Hack the planet! 🌎",
+            "Stack Overflow saves lives 🚑",
+            "Hello, is it bug you're looking for? 🐞",
+            "No code is better than no code 🧩",
+            "Keyboard not found. Press F1 to continue ⌨️",
+            "Computers do what you tell them, not what you want 🖥️",
+            "Have you tried turning it off and on again? 🔄",
+            "echo 'Hello World' > /dev/null",
+            "In case of emergency, git reset --hard 🔥",
+            "Just one more bug fix... 🐜",
+            "I see dead pixels 👀",
+            "Ship it! 🚀",
+            "99 little bugs in the code, take one down, patch it around... 🔄",
+            "I should write tests for this... but nah! 😈",
+            "Oops, pushed to production... again 🫣",
+            "Where's my semicolon? ; 🤯",
+            "DNS not found. Are you offline? 🌐",
+            "Real programmers count from 0️⃣",
+            "Too many tabs open! 🏗️",
+            "npm install... and pray 🙏",
+            "git push --force and hope for the best 💀",
+            "May the source be with you 🛠️",
+            "Programmer: an organism that turns coffee into code ☕➡️💻",
+            "404: Sleep not found 😴",
+            "Code never lies, comments sometimes do 📝",
+            "First, solve the problem. Then, write the code. 🤓",
+            "A bug in hand is worth two in the backlog 📋",
+            "The best code is no code at all 🚫",
+            "Let's make it 'future-proof' 🚧",
+            "I'm not lazy, I'm just on energy-saving mode 🔋",
+            "Regex is magic... until it isn't 🎩✨",
+            "Caution: Code under construction 🚧",
+            "My code works... I have no idea why 🤯",
+            "Too many if statements, not enough else 😵",
+            "Hacking time! ⏳",
+            "Syntax error: unexpected token 🤨",
+            "I don't always test my code, but when I do, I do it in production 🔥",
+            "They told me I could be anything, so I became a bug fixer 🛠️",
+            "I work on legacy code… I mean my own code from last month 😅",
+            "git blame — The detective tool 🔎",
+            "Bit by bit, byte by byte 💾",
+            "Oh, you wanted *that* feature? 🫣",
+            "The compiler is my best frenemy ⚡",
+            "Objects in the mirror are closer than they appear 🚗",
+            "Hello darkness, my old friend (debugging at 3 AM) 🌑",
+            "Coding is 90% debugging and 10% writing bugs 🤡",
+            "It's not a bug, it's a spontaneous feature 🌟",
+            "Don't code and drive 🚗💨",
+            "How did this ever work?! 🤯",
+            "Merge conflicts: where friendships end 💔",
+            "Writing docs... someday 📖",
+            "A wild bug appears! 🐞",
+            "Uncaught Exception: Brain Overload 🧠💥",
+            "Testing in production? Bold move. ⚠️",
+            "Do you even code, bro? 💪",
+            "404: Sanity not found 🧘",
+            "Who needs sleep when you have caffeine? ☕",
+            "Write once, debug forever 🔧",
+            "Deploying on a Friday is like playing Russian Roulette 🎰",
+            "One does not simply understand JavaScript 🤷",
+            "Code like nobody is watching 👀",
+            "If code reviews were easy, we'd all be perfect 🌟",
+            "Running on coffee and WiFi ☕📡",
+            "Your code gave me goosebumps... in a bad way 🫨",
+            "Works fine in dev! 🏗️",
+            "Software development: The art of broken things 💔",
+            "May all your pull requests be accepted ✨",
+            "The bug was in front of the screen all along 🫥",
+            "Nothing is impossible, just highly improbable 🛠️",
+            "My favorite language? Stack Overflow snippets 🔥",
+            "JavaScript: The language of WTF moments 🤔",
+            "New bug, who dis? 📱",
+            "rm -rf life 😵",
+            "Compiling... still compiling... forever compiling... 🏭",
+            "May your servers stay up and your errors stay down 🌍",
+            "Oops! I coded it again 🎶",
+            "I write clean code... until deadlines exist 🚀",
+            "Code is poetry, except when it's spaghetti 🍝",
+            "Too many frameworks, not enough time ⏳",
+            "I swear it worked yesterday 🤦",
+            "99% done... just needs testing 🧪",
+            "You miss 100% of the commits you don't push 📤",
+            "Code without tests is a ticking time bomb 💣",
+            "Autogenerated docs: AKA, lies in HTML format 💀",
+            "Machine learning: The art of overfitting 🎭",
+            "Debugging is like being a detective in a crime you committed 🔍"
+        ];
+
+        const phraseIndex = Math.floor(Math.random() * phrases.length);
+        const text = phrases[phraseIndex];
+
         const terminal = document.getElementById("terminal");
         let index = 0;
+
+        const baseSpeed = 150;
+        const typingSpeed = baseSpeed + text.length / 10;
 
         function typeText() {
             if (index < text.length) {
                 terminal.textContent += text.charAt(index);
                 index++;
-                setTimeout(typeText, 150);
+                setTimeout(typeText, typingSpeed);
             }
         }
 
