@@ -20,17 +20,40 @@
             box-sizing: border-box;
             overflow: hidden;
         }
+
         .terminal {
             font-size: 2rem;
             white-space: normal;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
+            word-break: break-word;
             border-right: 3px solid limegreen;
             padding-right: 5px;
             animation: blink 0.8s infinite;
             max-width: 100%;
-            display: inline-block;
+            display: block;
+            min-height: 3rem;
         }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 100%;
+        }
+
+        .refresh-text {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: opacity 0.2s ease-in-out;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .refresh-text:hover {
+            opacity: 0.7;
+        }
+
         @keyframes blink {
             50% { border-color: transparent; }
         }
@@ -52,9 +75,12 @@
     </style>
 </head>
 <body>
-    <div class="terminal" id="terminal"></div>
-    <script>
+    <div class="container">
+        <div class="terminal" id="terminal"></div>
+        <div class="refresh-text" id="refresh" onclick="regeneratePhrase()">Refresh</div>
+    </div>
 
+    <script>
         const phrases = [
             "Hello World 🌍",
             "Do not deploy on Friday 🚨",
@@ -163,24 +189,42 @@
             "Debugging is like being a detective in a crime you committed 🔍"
         ];
 
-        const phraseIndex = Math.floor(Math.random() * phrases.length);
-        const text = phrases[phraseIndex];
-
         const terminal = document.getElementById("terminal");
-        let index = 0;
+        const refreshText = document.getElementById("refresh");
 
-        const baseSpeed = 150;
-        const typingSpeed = baseSpeed + text.length / 10;
-
-        function typeText() {
-            if (index < text.length) {
-                terminal.textContent += text.charAt(index);
-                index++;
-                setTimeout(typeText, typingSpeed);
-            }
+        function getRandomPhrase() {
+            return phrases[Math.floor(Math.random() * phrases.length)];
         }
 
-        typeText();
+        function typeText(text, speed) {
+            terminal.textContent = "";
+            refreshText.style.visibility = "hidden"; 
+            refreshText.style.opacity = "0";
+
+            let index = 0;
+
+            function type() {
+                if (index < text.length) {
+                    terminal.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(type, speed);
+                } else {
+                    refreshText.style.visibility = "visible";
+                    refreshText.style.opacity = "1";
+                }
+            }
+
+            type();
+        }
+
+        function regeneratePhrase() {
+            const text = getRandomPhrase();
+            const baseSpeed = 150;
+            const typingSpeed = baseSpeed + (text.length / 10);
+            typeText(text, typingSpeed);
+        }
+
+        regeneratePhrase();
     </script>
 </body>
 </html>
